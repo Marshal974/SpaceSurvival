@@ -31,7 +31,7 @@ public class MotorInterface : MonoBehaviour {
 
 	public void Start()
 	{
-		coolingLvlMsg.text = "Cooling systems level " + coolerLvl + "are operational.";
+		coolingMsg.text = "Cooling systems level " + coolerLvl + " are operational.";
 	}
 
 	public void Update()
