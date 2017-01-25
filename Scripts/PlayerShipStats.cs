@@ -16,15 +16,19 @@ public class PlayerShipStats : MonoBehaviour {
 
 	public int shipMaxPower;
 	public int shipPower;
+	public int shipPowerRegen;
+	public int shipPowerLoses;
 	private float consRate = 1f;
 	public int motorPowerCons;
 	public Text powerText;
 
 	public int shipMaxOxy;
 	public int shipOxy;
+	public int shipO2Loses;
 	public Text oxyText;
 
-	public int shipOxyRenewRate;
+	public int shipOxyRenewRate = 1;
+	public int shipfilterOxyLvl = 1;
 	public int rocketParts;
 	public int maxrocketParts;
 	public float shipMaxFuel;
@@ -38,6 +42,8 @@ public class PlayerShipStats : MonoBehaviour {
 	private float ticTimer;
 	// Use this for initialization
 	void Start () {
+		shipfilterOxyLvl = playerInterfaceUI.GetComponent<TechnicalBayInterface> ().filterLvl;
+		TellTechBayRegenRate ();
 	
 	}
 	
@@ -46,6 +52,10 @@ public class PlayerShipStats : MonoBehaviour {
 	{
 		if (Time.time > ticTimer) {
 			ticTimer = Time.time + consRate;
+			shipOxy += (shipOxyRenewRate * shipfilterOxyLvl);
+			shipOxy -= shipTotalCrew;
+			shipPower += shipPowerRegen;
+			shipPower -= shipPowerLoses;
 			if (playerInterfaceUI.GetComponent<MotorInterface> ().tempRoom.value > 0) {
 				playerInterfaceUI.GetComponent<MotorInterface> ().TempCool ();
 			}
@@ -78,9 +88,14 @@ public class PlayerShipStats : MonoBehaviour {
 		}
 
 
-		oxyText.text = shipOxy.ToString() + " / " + shipMaxOxy.ToString();
+		oxyText.text = shipOxy.ToString() + " / " + shipMaxOxy.ToString()+ " / "+ ((shipOxyRenewRate * shipfilterOxyLvl) - shipTotalCrew - shipO2Loses) ;
 		integrityText.text = shipIntegrity.ToString();
-		powerText.text = shipPower.ToString() + " / " + shipMaxPower.ToString();
+		powerText.text = shipPower.ToString() + " / " + shipMaxPower.ToString()+ " / "+ (shipPowerRegen - shipPowerLoses);
+		if (isMoving) 
+		{
+			powerText.text = shipPower.ToString() + " / " + shipMaxPower.ToString()+ " / "+ (shipPowerRegen - shipPowerLoses - motorPowerCons);
+
+		}
 		crewText.text = shipTotalCrew.ToString();
 		passengersText.text = shipTotalPassengers.ToString();
 	}
@@ -97,6 +112,14 @@ public class PlayerShipStats : MonoBehaviour {
 	{
 		shipPower = 0;
 		playerInterfaceUI.GetComponent<MotorInterface> ().StopMotorModule ();
+		playerInterfaceUI.GetComponent<TechnicalBayInterface> ().StopTechBayModule ();
 	}
 		
+	public void	TellTechBayRegenRate ()
+	{
+		int regenRate;
+		regenRate = (shipOxyRenewRate * shipfilterOxyLvl);
+		int consumpRate = shipTotalCrew;
+		playerInterfaceUI.GetComponent<TechnicalBayInterface>().filterRegenO2Txt.text = "Consumption rate: "+ consumpRate +" /s." + "     Purifying rate: "+ regenRate +" /s.";
+	}
 }
