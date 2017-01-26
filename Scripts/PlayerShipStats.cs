@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class PlayerShipStats : MonoBehaviour {
-	GameObject shipStatMessPrefab;
+	public GameObject shipStatMessPrefab;
 	public int shipMaxIntegrity = 100;
 	public int shipIntegrity = 100;
 	public Text integrityText;
@@ -112,7 +112,7 @@ public class PlayerShipStats : MonoBehaviour {
 
 	public void ShutdownTheShipMods ()
 	{
-		GameObject go = Instantiate (shipStatMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		GameObject go = Instantiate (shipStatMessPrefab, playerInterfaceUI.GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.red;
 		go.GetComponentInChildren<Text> ().text = "We are out of power. Shutting down modules...";
 		shipPower = 0;
