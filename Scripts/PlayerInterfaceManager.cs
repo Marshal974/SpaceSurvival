@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class PlayerInterfaceManager : MonoBehaviour {
@@ -8,10 +9,15 @@ public class PlayerInterfaceManager : MonoBehaviour {
 	public bool crewSelectPanel;
 	public bool motorRoomPanel;
 	public bool TechnicalBayPanel;
+	public Transform alertMessPanel;
 	public Button techBBtn;
 	public Button MotorRBtn;
 	public Camera camShip;
 	public Transform[] camPositions;
+
+	public UnityEvent ToggleMotorPanel;
+	public UnityEvent ToggleTechBayPanel;
+
 
 	public bool globalShipView;
 	// Use this for initialization
@@ -37,23 +43,35 @@ public class PlayerInterfaceManager : MonoBehaviour {
 			if (motorRoomPanel == true) 
 			{
 				camShip.fieldOfView = 5;
-				techBBtn.interactable = false;
+//				techBBtn.interactable = false;
 				yield break;
 
 			}
 			if (TechnicalBayPanel == true) 
 			{
 				camShip.fieldOfView = 8;
-				MotorRBtn.interactable = false;
+//				MotorRBtn.interactable = false;
 				yield break;
 
 			}
 		}
-		techBBtn.interactable = true;
-		MotorRBtn.interactable = true;
+//		techBBtn.interactable = true;
+//		MotorRBtn.interactable = true;
 		globalShipView = false;
 		camShip.fieldOfView = 60;
 
-		
 	}
+
+	public void CloseAllOtherModules()
+	{
+		if (motorRoomPanel) {
+			ToggleMotorPanel.Invoke ();
+		}
+		if (TechnicalBayPanel) {
+			ToggleTechBayPanel.Invoke ();
+		}
+	}
+
+
+
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class PlayerShipStats : MonoBehaviour {
+	GameObject shipStatMessPrefab;
 	public int shipMaxIntegrity = 100;
 	public int shipIntegrity = 100;
 	public Text integrityText;
@@ -51,6 +52,7 @@ public class PlayerShipStats : MonoBehaviour {
 	void Update () 
 	{
 		if (Time.time > ticTimer) {
+			
 			ticTimer = Time.time + consRate;
 			shipOxy += (shipOxyRenewRate * shipfilterOxyLvl);
 			shipOxy -= shipTotalCrew;
@@ -110,6 +112,9 @@ public class PlayerShipStats : MonoBehaviour {
 
 	public void ShutdownTheShipMods ()
 	{
+		GameObject go = Instantiate (shipStatMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.red;
+		go.GetComponentInChildren<Text> ().text = "We are out of power. Shutting down modules...";
 		shipPower = 0;
 		playerInterfaceUI.GetComponent<MotorInterface> ().StopMotorModule ();
 		playerInterfaceUI.GetComponent<TechnicalBayInterface> ().StopTechBayModule ();

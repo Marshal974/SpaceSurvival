@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MotorInterface : MonoBehaviour {
 	public int ModuleBootCost = 200;
 	public Button moduleReboot;
+	public GameObject motorMessPrefab;
 	public bool actifTab;
 	public GameObject ChildMenu;
 	public Slider ionicCons;
@@ -33,6 +34,7 @@ public class MotorInterface : MonoBehaviour {
 	public Button crewLeave;
 	public bool isCrewed;
 	private PlayerShipStats playerShipStats;
+	private bool alreadyRunning;
 
 
 	public void Start()
@@ -46,6 +48,9 @@ public class MotorInterface : MonoBehaviour {
 	{
 		if (overheating == false && tempRoom.value == tempRoom.maxValue) 
 		{
+			GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+			go.GetComponentInChildren<Image> ().color = Color.red;
+			go.GetComponentInChildren<Text> ().text = "The engines are overheating! max speed reduced.";
 			overheating = true;
 			ionicCons.maxValue = 5;
 			if (ionicCons.value > 5) {
@@ -56,6 +61,9 @@ public class MotorInterface : MonoBehaviour {
 		{
 			if (tempRoom.value < tempRoom.maxValue * 80 / 100) 
 			{
+				GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+				go.GetComponentInChildren<Image> ().color = Color.green;
+				go.GetComponentInChildren<Text> ().text = "The engines are ready to be pushed again !";
 				overheating = false;
 				ionicCons.maxValue = 30;
 
@@ -65,6 +73,9 @@ public class MotorInterface : MonoBehaviour {
 
 	public void BreakTheModule()
 	{
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.red;
+		go.GetComponentInChildren<Text> ().text = "Something is going really wrong in the engines room. Better fix it.";
 		_coolerLvl = coolerLvl;
 		coolerLvl = 0;
 		coolingBtn.interactable = true;
@@ -79,6 +90,9 @@ public class MotorInterface : MonoBehaviour {
 
 	public void FixTheModule()
 	{
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.red;
+		go.GetComponentInChildren<Text> ().text = "The Engines have been fixed. Great job.";
 		coolerLvl = _coolerLvl;
 		coolingBtn.interactable = false;
 		coolingBtn.gameObject.GetComponent<Image> ().color = Color.white;
@@ -92,9 +106,10 @@ public class MotorInterface : MonoBehaviour {
 
 	public void ToggleMenu(){
 		GetComponent<PlayerInterfaceManager>().ChangeCamPosition ();
-		GetComponent<PlayerInterfaceManager>().motorRoomPanel =! GetComponent<PlayerInterfaceManager>().motorRoomPanel;
 		;
 		if (actifTab == false){
+			GetComponent<PlayerInterfaceManager> ().CloseAllOtherModules ();
+			GetComponent<PlayerInterfaceManager>().motorRoomPanel =! GetComponent<PlayerInterfaceManager>().motorRoomPanel;
 
 			ChildMenu.SetActive (true);
 			actifTab = true;
@@ -113,6 +128,7 @@ public class MotorInterface : MonoBehaviour {
 			return;
 		}
 		if (actifTab == true){
+			GetComponent<PlayerInterfaceManager>().motorRoomPanel =! GetComponent<PlayerInterfaceManager>().motorRoomPanel;
 
 			ChildMenu.SetActive (false);
 			actifTab = false;	
@@ -143,6 +159,9 @@ public class MotorInterface : MonoBehaviour {
 	//arret du module ! (appeler quand ya pu de courant par exemple)
 	public void StopMotorModule()
 	{
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.red;
+		go.GetComponentInChildren<Text> ().text = "The engines are shutdown.";
 		isShutdown = true;
 		ionicCons.value = 0;
 		engineSwitch.interactable = false;
@@ -193,6 +212,9 @@ public class MotorInterface : MonoBehaviour {
 		}
 		yield return new WaitForSeconds (1f);
 		advertiseTxt.text = "";
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.green;
+		go.GetComponentInChildren<Text> ().text = "Propulsion System back online.";
 		
 
 	}
@@ -209,7 +231,10 @@ public class MotorInterface : MonoBehaviour {
 
 
 		gameObject.GetComponent<CrewSelectInterface> ().actifTab = false;
-	
+		if (alreadyRunning) 
+		{
+			return;
+		}
 
 		StartCoroutine (MakeAGuyJoinTheRoom());
 	}
@@ -239,12 +264,16 @@ public class MotorInterface : MonoBehaviour {
 		crewCharScript.isAssigned = false;
 		assignCrew.gameObject.SetActive (true);
 		CrewPanel.SetActive (false);
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.white;
+		go.GetComponentInChildren<Text> ().text = crewCharScript.nom + "is now available.";
 
 
 	}
 
 	IEnumerator MakeAGuyJoinTheRoom()
 	{
+		alreadyRunning = true;
 		crewCharScript.isAssigned = true;
 		crewLeave.interactable = false;
 		crewDescriptif.text = crewCharScript.nom + " is on it's way !";
@@ -266,6 +295,9 @@ public class MotorInterface : MonoBehaviour {
 			}
 		}
 		crewLeave.interactable = true;
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.white;
+		go.GetComponentInChildren<Text> ().text = crewCharScript.nom + " is now active in the engines room.";
 
 	}
 	public void TempRize ()

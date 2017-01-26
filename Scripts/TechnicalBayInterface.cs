@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class TechnicalBayInterface : MonoBehaviour {
 	public int moduleLvl = 5;
 	public int moduleConsumption = 1;
+	public GameObject techBayMessPrefab;
 	public bool actifTab;
 	public GameObject childMenu;
 	public Text crewName;
@@ -43,8 +44,9 @@ public class TechnicalBayInterface : MonoBehaviour {
 
 	public void ToggleMenu(){
 		GetComponent<PlayerInterfaceManager>().ChangeCamPosition ();
-		GetComponent<PlayerInterfaceManager>().TechnicalBayPanel =! GetComponent<PlayerInterfaceManager>().TechnicalBayPanel;
 		if (actifTab == false){
+			GetComponent<PlayerInterfaceManager>().CloseAllOtherModules ();
+			GetComponent<PlayerInterfaceManager>().TechnicalBayPanel =! GetComponent<PlayerInterfaceManager>().TechnicalBayPanel;
 
 			childMenu.SetActive (true);
 			actifTab = true;
@@ -60,6 +62,7 @@ public class TechnicalBayInterface : MonoBehaviour {
 			return;
 		}
 		if (actifTab == true){
+			GetComponent<PlayerInterfaceManager>().TechnicalBayPanel =! GetComponent<PlayerInterfaceManager>().TechnicalBayPanel;
 
 			childMenu.SetActive (false);
 			actifTab = false;	
@@ -120,6 +123,9 @@ public class TechnicalBayInterface : MonoBehaviour {
 		playerShipStats.TellTechBayRegenRate ();
 		assignCrew.gameObject.SetActive (true);
 		CrewPanel.SetActive (false);
+		GameObject go = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.green;
+		go.GetComponentInChildren<Text> ().text = crewCharScript.nom + " is now available.";
 
 
 	}
@@ -146,6 +152,9 @@ public class TechnicalBayInterface : MonoBehaviour {
 
 		}
 		alreadyRunning = false;
+		GameObject go = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.white;
+		go.GetComponentInChildren<Text> ().text = crewCharScript.nom + " is now working in the Tech Bay.";
 	}
 
 	public void StopTechBayModule()
