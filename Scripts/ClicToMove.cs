@@ -4,6 +4,7 @@ using System.Collections;
 public class ClicToMove : MonoBehaviour 
 	{
 		Vector3 newPosition;
+	public LayerMask layerToTarget;
 	public float speed = 5f;
 	public float rotSpeed = 10f;
 	public GameObject targetPos;
@@ -21,7 +22,7 @@ public class ClicToMove : MonoBehaviour
 				targetPos.GetComponent<LineRenderer> ().enabled = true;
 				RaycastHit hit;
 			Ray ray = camPlayer.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, 15000f))
+			if (Physics.Raycast(ray, out hit, 15000f, layerToTarget))
 				{
 					if(hit.collider.gameObject.layer == 8){
 				newPosition = new Vector3 (hit.point.x, 0f, hit.point.z);
