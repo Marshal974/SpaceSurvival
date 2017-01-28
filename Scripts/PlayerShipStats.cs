@@ -2,19 +2,32 @@
 using System.Collections;
 using UnityEngine.UI;
 
+/// <summary>
+/// Script qui permet de gérer les statistiques du vaisseau
+/// Souvent appelle dans d'autres modules
+/// </summary>
+
 public class PlayerShipStats : MonoBehaviour {
+    // fais aparaitre un message
+    // Notification ingame
 	public GameObject shipStatMessPrefab;
+
+    // pv
 	public int shipMaxIntegrity = 100;
 	public int shipIntegrity = 100;
 	public Text integrityText;
 
+    // résistances aux radiations
 	public int shipResisToRad = 5;
 	public int shipTotalCrew;
 	public Text crewText;
 
+    // nombre max de passengers
 	public int shipTotalPassengers;
 	public Text passengersText;
 
+    // Energie du vaisseau 
+    // Power / MaxPower / Regen
 	public int shipMaxPower;
 	public int shipPower;
 	public int shipPowerRegen;
@@ -23,6 +36,7 @@ public class PlayerShipStats : MonoBehaviour {
 	public int motorPowerCons;
 	public Text powerText;
 
+    // Oxygen part
 	public int shipMaxOxy;
 	public int shipOxy;
 	public int shipO2Loses;

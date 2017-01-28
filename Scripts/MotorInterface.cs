@@ -4,25 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MotorInterface : MonoBehaviour {
-	public int ModuleBootCost = 200;
+    // coup d'énergie pour redémarrer si jamais elle est éteinte : quand plus d'énergie
+    public int ModuleBootCost = 200;
 	public Button moduleReboot;
+
 	public GameObject motorMessPrefab;
-	public bool actifTab;
+
+	public bool actifTab; // fenêtre ouverte ou pas
+
 	public GameObject ChildMenu;
 	public Slider ionicCons;
 	public Slider tempRoom;
 	public Text ionicSpeed;
-	public Text ElecConsTxt;
-	public Button engineSwitch;
+	public Text ElecConsTxt; // affiche les informations pour le joueur
+	public Button engineSwitch; // en cours
 
-	public Text coolingMsg;
+	public Text coolingMsg; 
 	public Text coolingLvlMsg;
 	public Button coolingBtn;
 	public int coolerLvl = 1;
 	private int _coolerLvl;
 
-	private bool overheating;
-	private bool isShutdown;
+	private bool overheating; // en surchauffe ?
+	private bool isShutdown; // module éteint ou allumer
 	public Text advertiseTxt;
 
 
@@ -34,7 +38,7 @@ public class MotorInterface : MonoBehaviour {
 	public Button crewLeave;
 	public bool isCrewed;
 	private PlayerShipStats playerShipStats;
-	private bool alreadyRunning;
+	private bool alreadyRunning; // permet de savoir si un script est déjà instancier ou non
 
 
 	public void Start()

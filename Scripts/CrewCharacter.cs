@@ -4,14 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CrewCharacter : MonoBehaviour {
-		int pvMax = 10;
-		int pvActuel = 10;
-	public bool techComp = true;
-	public int lvlTechComp = 5;
+	int pvMax = 10;
+	int pvActuel = 10;
+    public bool techComp = true;
+    public int lvlTechComp = 5;
 
-	public bool navComp;
+    public bool medComp = true;
+    public int lvlMedComp = 5;
+
+    public bool navComp;
 	public int lvlNavComp = 5;
-		public string nom = "Jessy Jones";
+	public string nom = "Jessy Jones";
 	public int ID = 5;
 	public bool isAssigned = false;
 	public GameObject menuResume;
@@ -27,7 +30,8 @@ public class CrewCharacter : MonoBehaviour {
 			healthy,
 			sick,
 			infected
-		}Status status = Status.healthy;
+		}
+    Status status = Status.healthy;
 		
 	void Start()
 	{
@@ -44,7 +48,7 @@ public class CrewCharacter : MonoBehaviour {
 		crewInfo.selectButton.onClick.AddListener(SayImInRoomX);
 		crewInfo.compDescription.text = "";
 
-		if (!techComp && !navComp) 
+		if (!techComp && !navComp && !medComp) 
 		{
 			crewInfo.compDescription.text = "No special skills.";
 		}
@@ -53,12 +57,16 @@ public class CrewCharacter : MonoBehaviour {
 			crewInfo.compDescription.text += "Technician level " + lvlTechComp + "  ";
 				
 		}
-		if (navComp) 
-		{
-			crewInfo.compDescription.text += "Navigator level " + lvlNavComp;
+        if (navComp)
+        {
+            crewInfo.compDescription.text += "Navigator level " + lvlNavComp + "  ";
+        }
+        if (medComp)
+        {
+            crewInfo.compDescription.text += "Medecin level " + lvlNavComp;
 
-		}
-		if (isAssigned == false) {
+        }
+        if (isAssigned == false) {
 			crewInfo.selectButton.GetComponent<Image> ().color = colorGood;
 			crewInfo.description.text = "Is available";
 			crewInfo.selectButton.interactable = true;
@@ -72,7 +80,9 @@ public class CrewCharacter : MonoBehaviour {
 
 		}
 
-	}	public void SayImInRoomX()
+	}
+
+    public void SayImInRoomX()
 	{
 
 		if (playerInterface.GetComponent<PlayerInterfaceManager> ().motorRoomPanel == true) {
@@ -83,10 +93,15 @@ public class CrewCharacter : MonoBehaviour {
 			playerInterface.GetComponent<TechnicalBayInterface> ().GetAGuy (gameObject.name);
 
 		}
-		if (playerInterface.GetComponent<PlayerInterfaceManager>().radarRoomPanel == true)
-		{
-			playerInterface.GetComponent<RadarInterface>().GetAGuy(gameObject.name);
-		}
-	}
+        if (playerInterface.GetComponent<PlayerInterfaceManager>().radarRoomPanel == true)
+        {
+            playerInterface.GetComponent<RadarInterface>().GetAGuy(gameObject.name);
+        }
+
+        if (playerInterface.GetComponent<PlayerInterfaceManager>().resRoomPanel == true)
+        {
+            playerInterface.GetComponent<ResRoomInterface>().GetAGuy(gameObject.name);
+        }
+    }
 }
 
