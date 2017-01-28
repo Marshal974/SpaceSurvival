@@ -9,8 +9,9 @@ public class PlayerInterfaceManager : MonoBehaviour {
 	public bool crewSelectPanel;
 	public bool motorRoomPanel;
 	public bool TechnicalBayPanel;
-	public bool radarRoomPanel;
-	public Transform alertMessPanel;
+    public bool radarRoomPanel;
+    public bool resRoomPanel;
+    public Transform alertMessPanel;
 //	public Button techBBtn;
 //	public Button MotorRBtn;
 //	public Button radarRBtn;
@@ -19,9 +20,10 @@ public class PlayerInterfaceManager : MonoBehaviour {
 
 	public UnityEvent ToggleMotorPanel;
 	public UnityEvent ToggleTechBayPanel;
-	public UnityEvent ToggleRadarRoomPanel;
+    public UnityEvent ToggleRadarRoomPanel;
+    public UnityEvent ToggleResRoomPanel;
 
-	public bool globalShipView;
+    public bool globalShipView;
 	// Use this for initialization
 	void Start () {
 		camShip = GameObject.Find ("ShipCamera").GetComponent<Camera> ();
@@ -56,12 +58,17 @@ public class PlayerInterfaceManager : MonoBehaviour {
 				yield break;
 
 			}
-			if (radarRoomPanel) 
-			{
-				camShip.fieldOfView = 10;
-				yield break;
-			}
-		}
+            if (radarRoomPanel)
+            {
+                camShip.fieldOfView = 10;
+                yield break;
+            }
+            if (resRoomPanel)
+            {
+                camShip.fieldOfView = 3;
+                yield break;
+            }
+        }
 //		techBBtn.interactable = true;
 //		MotorRBtn.interactable = true;
 		globalShipView = false;
@@ -77,11 +84,15 @@ public class PlayerInterfaceManager : MonoBehaviour {
 		if (TechnicalBayPanel) {
 			ToggleTechBayPanel.Invoke ();
 		}
-		if (radarRoomPanel) 
-		{
-			ToggleRadarRoomPanel.Invoke ();
-		}
-	}
+        if (radarRoomPanel)
+        {
+            ToggleRadarRoomPanel.Invoke();
+        }
+        if (resRoomPanel)
+        {
+            ToggleResRoomPanel.Invoke();
+        }
+    }
 
 
 
