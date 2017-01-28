@@ -8,6 +8,9 @@ public class CrewCharacter : MonoBehaviour {
 		int pvActuel = 10;
 	public bool techComp = true;
 	public int lvlTechComp = 5;
+
+	public bool navComp;
+	public int lvlNavComp = 5;
 		public string nom = "Jessy Jones";
 	public int ID = 5;
 	public bool isAssigned = false;
@@ -39,10 +42,21 @@ public class CrewCharacter : MonoBehaviour {
 		crewInfo =  menuResume.GetComponent<CrewMemberInfoHandler> ();
 		crewInfo.name.text = nom;
 		crewInfo.selectButton.onClick.AddListener(SayImInRoomX);
+		crewInfo.compDescription.text = "";
+
+		if (!techComp && !navComp) 
+		{
+			crewInfo.compDescription.text = "No special skills.";
+		}
 		if (techComp == true) 
 		{
-			crewInfo.compDescription.text = "Technician level " + lvlTechComp;
+			crewInfo.compDescription.text += "Technician level " + lvlTechComp + "  ";
 				
+		}
+		if (navComp) 
+		{
+			crewInfo.compDescription.text += "Navigator level " + lvlNavComp;
+
 		}
 		if (isAssigned == false) {
 			crewInfo.selectButton.GetComponent<Image> ().color = colorGood;
@@ -68,6 +82,10 @@ public class CrewCharacter : MonoBehaviour {
 		{
 			playerInterface.GetComponent<TechnicalBayInterface> ().GetAGuy (gameObject.name);
 
+		}
+		if (playerInterface.GetComponent<PlayerInterfaceManager>().radarRoomPanel == true)
+		{
+			playerInterface.GetComponent<RadarInterface>().GetAGuy(gameObject.name);
 		}
 	}
 }

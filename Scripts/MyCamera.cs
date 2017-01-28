@@ -21,6 +21,7 @@ public class MyCamera : MonoBehaviour
 
 	// references
 	public GameObject thePlayer; // the player reference, inspector
+	private GameObject _thePlayer;
 	public GameObject focusPoint; // the focus point, inspector
 	public GameObject cameraObject; // the camera object reference
 	// pan
@@ -50,6 +51,7 @@ public class MyCamera : MonoBehaviour
 	private void Start()
 	{
 		status = MyCameraStatusEnum.AT_PLAYER; // the camera must start at AT_PLAYER status
+		_thePlayer = thePlayer; //remember the player obj
 	}
 
 	private void Update()
@@ -110,12 +112,24 @@ public class MyCamera : MonoBehaviour
 		// y of the camera, to discovery the position to follow
 		// ps: this stuff avoid problems with the follow, when zoom is different than default.
 		// TODO: Look for a better solution to do this. Maybe use distance from focus point as reference.
-		while (goal.y < transform.position.y)
+//		while (goal.y < transform.position.y)
+//		{
+//			goal += -cameraObject.transform.forward * 0.5f;
+//			Debug.Log (goal.y);
+//
+//		}
+//		if (transform.position.y == goal.y) 
+//		{
+//			status = MyCameraStatusEnum.MANUAL;
+//			thePlayer = _thePlayer;
+//		}
+		float distance = Vector3.Distance(goal, transform.position);
+		Debug.Log (distance);
+		if(distance < 3f)
 		{
-			goal += -cameraObject.transform.forward * 0.5f;
-
+			Debug.Log ("cam reach");
+			status = MyCameraStatusEnum.MANUAL;
 		}
-
 		// do the movement
 		transform.position = Vector3.Lerp(transform.position, goal, Time.deltaTime * followSmoothSpeed);
 //		cameraObject.transform.rotation = Quaternion.Lerp (cameraObject.transform.rotation, newRot, 1f * Time.deltaTime);
@@ -175,9 +189,22 @@ public class MyCamera : MonoBehaviour
 			status = MyCameraStatusEnum.MANUAL;
 		}
 		// rule 2: MANUAL to AT_PLAYER
-		else if (status == MyCameraStatusEnum.MANUAL && InputManager.instance.GetJumpBackToPlayer())
+		else if (InputManager.instance.GetJumpBackToPlayer())
+		{
+			thePlayer = _thePlayer;
+			if (status == MyCameraStatusEnum.MANUAL) {
+				status = MyCameraStatusEnum.AT_PLAYER;
+			}
+		}
+	}
+
+	public void FocusOnInterestPoint(GameObject go)
+	{
+		thePlayer = go;
+		if (status == MyCameraStatusEnum.MANUAL) 
 		{
 			status = MyCameraStatusEnum.AT_PLAYER;
+
 		}
 	}
 

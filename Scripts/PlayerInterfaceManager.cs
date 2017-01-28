@@ -9,15 +9,17 @@ public class PlayerInterfaceManager : MonoBehaviour {
 	public bool crewSelectPanel;
 	public bool motorRoomPanel;
 	public bool TechnicalBayPanel;
+	public bool radarRoomPanel;
 	public Transform alertMessPanel;
-	public Button techBBtn;
-	public Button MotorRBtn;
+//	public Button techBBtn;
+//	public Button MotorRBtn;
+//	public Button radarRBtn;
 	public Camera camShip;
 	public Transform[] camPositions;
 
 	public UnityEvent ToggleMotorPanel;
 	public UnityEvent ToggleTechBayPanel;
-
+	public UnityEvent ToggleRadarRoomPanel;
 
 	public bool globalShipView;
 	// Use this for initialization
@@ -54,6 +56,11 @@ public class PlayerInterfaceManager : MonoBehaviour {
 				yield break;
 
 			}
+			if (radarRoomPanel) 
+			{
+				camShip.fieldOfView = 10;
+				yield break;
+			}
 		}
 //		techBBtn.interactable = true;
 //		MotorRBtn.interactable = true;
@@ -69,6 +76,10 @@ public class PlayerInterfaceManager : MonoBehaviour {
 		}
 		if (TechnicalBayPanel) {
 			ToggleTechBayPanel.Invoke ();
+		}
+		if (radarRoomPanel) 
+		{
+			ToggleRadarRoomPanel.Invoke ();
 		}
 	}
 
