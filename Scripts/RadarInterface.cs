@@ -27,6 +27,9 @@
 		private float nextTic;
 		private bool alreadyRunning;
 
+	//sound
+	public AudioClip radarSnd;
+
 	void Start()
 	{
 		nextTic = Time.time;
@@ -35,6 +38,7 @@
 	{			
 		if (Time.time > nextTic) 
 		{
+
 		while (radarActive) 
 		{
 
@@ -53,6 +57,9 @@
 
 	IEnumerator ScanWithRadar()
 	{
+		if (childMenu.activeSelf == true) {
+			GetComponent<AudioSource> ().PlayOneShot (radarSnd);
+		}
 		radarCam.enabled = true;
 		yield return new WaitForEndOfFrame();
 		radarCam.enabled = false;
@@ -164,7 +171,7 @@
 			{
 				crewDescriptif.text = "Navigator level " + crewCharScript.lvlNavComp;
 				ActivateTheRadar ();
-				timeBetweenTics = Mathf.Round( 5/crewCharScript.lvlNavComp);
+				timeBetweenTics = Mathf.Round( 15/crewCharScript.lvlNavComp);
 				radarRangeTxt.text = "Actualisation rate : "+ timeBetweenTics + "/s.";
 			}
 			alreadyRunning = false;

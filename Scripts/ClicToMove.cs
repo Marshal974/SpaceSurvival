@@ -32,7 +32,7 @@ public class ClicToMove : MonoBehaviour
 				Debug.Log ("distance: " + distancetotale);
 				targetPos.transform.position = hit.point;
 				targetPos.GetComponent<DrawLineToPlayer> ().SetStartingLinePoint ();
-					GetComponent<PlayerShipStats> ().isMoving = true;
+					GetComponent<PlayerShipStats> ().StartToMove ();
 					}}
 			}
 		transform.position = Vector3.MoveTowards(transform.position, newPosition, speed * Time.deltaTime);

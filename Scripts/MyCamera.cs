@@ -124,10 +124,8 @@ public class MyCamera : MonoBehaviour
 //			thePlayer = _thePlayer;
 //		}
 		float distance = Vector3.Distance(goal, transform.position);
-		Debug.Log (distance);
 		if(distance < 3f)
 		{
-			Debug.Log ("cam reach");
 			status = MyCameraStatusEnum.MANUAL;
 		}
 		// do the movement
