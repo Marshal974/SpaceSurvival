@@ -7,7 +7,7 @@ public class SceneManagerHandler : MonoBehaviour {
 
 	public GameObject MessPrefab;
 	public GameObject alertMessPanel;
-
+	public GameObject sunPrefab;
 	public GameObject wreckagePrefab;
 
 
@@ -20,7 +20,11 @@ public class SceneManagerHandler : MonoBehaviour {
 		LeakOfOxygen ();
 		BreakTheMotorRoom ();
 		AddAWreckage ();
-		
+		Instantiate (sunPrefab);
+		if (Random.Range (0, 2) > 0) 
+		{
+			Instantiate (sunPrefab);
+		}
 	}
 
 

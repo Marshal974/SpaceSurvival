@@ -42,6 +42,7 @@ public class PlayerShipStats : MonoBehaviour {
 	public int shipOxy;
 	public int shipO2Loses;
 	public Text oxyText;
+	private bool O2AlertDone;
 
 	public int shipOxyRenewRate = 1;
 	public int shipfilterOxyLvl = 1;
@@ -100,6 +101,15 @@ public class PlayerShipStats : MonoBehaviour {
 		if (shipOxy > shipMaxOxy) 
 		{
 			shipOxy = shipMaxOxy;
+		}
+		if (shipOxy >= 0) {
+			shipOxy = 0;
+			if (O2AlertDone == false) {
+				O2AlertDone = true;
+				GameObject go = Instantiate (shipStatMessPrefab, playerInterfaceUI.GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+				go.GetComponentInChildren<Image> ().color = Color.red;
+				go.GetComponentInChildren<Text> ().text = "We are out of fresh air. people are gonna die here !!!";
+			}
 		}
 		if (shipPower > shipMaxPower) 
 		{
