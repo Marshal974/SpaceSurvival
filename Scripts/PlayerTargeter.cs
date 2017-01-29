@@ -21,7 +21,7 @@ public class PlayerTargeter : MonoBehaviour {
 		if (other.gameObject.tag == "Player") 
 		{
 			GetComponent<LineRenderer> ().enabled = false;
-			other.GetComponent<PlayerShipStats> ().isMoving = false;
+			other.GetComponent<PlayerShipStats> ().StopMoving ();
 
 		}
 	}

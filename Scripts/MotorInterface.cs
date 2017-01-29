@@ -46,6 +46,7 @@ public class MotorInterface : MonoBehaviour {
 		coolingMsg.text = "Cooling systems level " + coolerLvl + " are operational.";
 		playerShipStats = GameObject.Find ("PlayerObj").GetComponent<PlayerShipStats> ();
 
+
 	}
 
 	public void Update()
@@ -74,6 +75,7 @@ public class MotorInterface : MonoBehaviour {
 			}
 		}
 	}
+
 
 	public void BreakTheModule()
 	{
@@ -154,7 +156,8 @@ public class MotorInterface : MonoBehaviour {
 	public void SetMotorConsRate()
 	{
 
-		GameObject.Find ("PlayerObj").GetComponent<PlayerShipStats> ().motorPowerCons = Mathf.RoundToInt ( ionicCons.value);
+		playerShipStats.motorPowerCons = Mathf.RoundToInt ( ionicCons.value);
+		playerShipStats.audioS.volume =0.2f+0.01f * ionicCons.value;
 		GameObject.Find ("PlayerObj").GetComponent<ClicToMove> ().speed = ionicCons.value/2;
 		ionicSpeed.text = "Ionic speed: " + ionicCons.value / 2 + " m/s.";
 		ElecConsTxt.text = ionicCons.value.ToString() + "/s.";
@@ -166,6 +169,8 @@ public class MotorInterface : MonoBehaviour {
 		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.red;
 		go.GetComponentInChildren<Text> ().text = "The engines are shutdown.";
+		playerShipStats.audioS.mute = true;
+
 		isShutdown = true;
 		ionicCons.value = 0;
 		engineSwitch.interactable = false;
@@ -193,6 +198,10 @@ public class MotorInterface : MonoBehaviour {
 	IEnumerator EngineSwitchOn()
 	{
 		advertiseTxt.text = "Starting the engines !";
+		playerShipStats.audioS.clip = playerShipStats.engineRestartSnd;
+		playerShipStats.audioS.volume = 1f;
+		playerShipStats.audioS.mute = false;
+		playerShipStats.audioS.Play ();
 			
 		playerShipStats.shipPower -= ModuleBootCost / 5;
 		yield return new WaitForSeconds (1f);
@@ -203,6 +212,7 @@ public class MotorInterface : MonoBehaviour {
 		yield return new WaitForSeconds (1f);
 		playerShipStats.shipPower -= ModuleBootCost / 5;
 		yield return new WaitForSeconds (1f);
+
 		advertiseTxt.text = "Engines are ready";
 		playerShipStats.shipPower -= ModuleBootCost / 5;
 		ionicCons.value = 5;
@@ -215,6 +225,8 @@ public class MotorInterface : MonoBehaviour {
 			}
 		}
 		yield return new WaitForSeconds (1f);
+		playerShipStats.audioS.mute = true;
+
 		advertiseTxt.text = "";
 		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.green;

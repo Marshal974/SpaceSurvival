@@ -25,14 +25,24 @@ public class PlayerInterfaceManager : MonoBehaviour {
 
     public bool globalShipView;
 	// Use this for initialization
+
+	// Sound management
+	public AudioSource audioSMenu;
+	public AudioClip clicDenySnd;
+	public AudioClip clicAcceptedSnd;
+
 	void Start () {
 		camShip = GameObject.Find ("ShipCamera").GetComponent<Camera> ();
+		audioSMenu = GetComponent<AudioSource> ();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-		
+	public void PlayClicAcceptedSound()
+	{
+		audioSMenu.PlayOneShot (clicAcceptedSnd);
+	}
+	public void PlayClicDeniedSound()
+	{
+		audioSMenu.PlayOneShot (clicDenySnd);
 	}
 	public void ChangeCamPosition()
 	{
