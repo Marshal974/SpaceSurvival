@@ -27,6 +27,7 @@ public class TechnicalBayInterface : MonoBehaviour {
 	private bool alreadyRunning;
 
 	private PlayerShipStats playerShipStats;
+	public Button repairBtn;
 
 
 	// Use this for initialization
@@ -160,5 +161,46 @@ public class TechnicalBayInterface : MonoBehaviour {
 	public void StopTechBayModule()
 	{
 		
+	}
+	public void BreakTheModule()
+	{
+		filterLvlTxt.text = "oxygen filter level " + filterLvl + " is leaking!";
+
+		GameObject go = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.red;
+		go.GetComponentInChildren<Text> ().text = "Something is going really wrong in the TechBay. Better fix it.";
+		repairBtn.interactable = true;
+		repairBtn.gameObject.SetActive(true);
+
+	}
+
+	public void FixTheModule ()
+	{
+		if (isCrewed && crewCharScript.techComp == true) {
+			StartCoroutine (RepairTheModule());
+			repairBtn.interactable = false;
+			repairBtn.gameObject.SetActive (false);
+			return;
+
+		}
+		GetComponent<PlayerInterfaceManager> ().PlayClicDeniedSound ();
+	}
+
+	IEnumerator RepairTheModule()
+	{
+		filterLvlTxt.text = "oxygen filter level " + filterLvl + " is being fixed...";
+		crewLeave.interactable = false;
+		GameObject go2 = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go2.GetComponentInChildren<Image> ().color = Color.yellow;
+		go2.GetComponentInChildren<Text> ().text = 	crewCharScript.nom + "is fixing the leak...";
+		yield return new WaitForSeconds (10f);
+		GameObject go = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.green;
+		go.GetComponentInChildren<Text> ().text = "The problems have been fixed. Great job.";
+		crewLeave.interactable = true;
+		playerShipStats.shipO2Loses = 0;
+		filterLvlTxt.text = "oxygen filter level " + filterLvl + " operational and clean";
+
+
 	}
 }

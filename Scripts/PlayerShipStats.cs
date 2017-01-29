@@ -12,6 +12,7 @@ public class PlayerShipStats : MonoBehaviour {
     // Notification ingame
 	public GameObject shipStatMessPrefab;
 
+
     // pv
 	public int shipMaxIntegrity = 100;
 	public int shipIntegrity = 100;
@@ -48,7 +49,15 @@ public class PlayerShipStats : MonoBehaviour {
 	public int maxrocketParts;
 	public float shipMaxFuel;
 	public float shipFuel;
+	public float shipFuelRegen = 1;
 	public Text fuelText;
+	public Slider fuelInMotorRoom;
+
+	//sons
+	public AudioSource audioS;
+	public AudioClip engineSnd;
+	public AudioClip engineRestartSnd;
+
 
 
 	public bool isMoving = false;
@@ -72,10 +81,13 @@ public class PlayerShipStats : MonoBehaviour {
 			shipOxy -= shipTotalCrew;
 			shipPower += shipPowerRegen;
 			shipPower -= shipPowerLoses;
+			shipFuel += shipFuelRegen;
+			fuelInMotorRoom.value = shipFuel;
 			if (playerInterfaceUI.GetComponent<MotorInterface> ().tempRoom.value > 0) {
 				playerInterfaceUI.GetComponent<MotorInterface> ().TempCool ();
 			}
 			if (isMoving == true) {
+
 				PowerCons ();
 				playerInterfaceUI.GetComponent<MotorInterface> ().TempRize ();
 			}
@@ -140,5 +152,22 @@ public class PlayerShipStats : MonoBehaviour {
 		regenRate = (shipOxyRenewRate * shipfilterOxyLvl);
 		int consumpRate = shipTotalCrew;
 		playerInterfaceUI.GetComponent<TechnicalBayInterface>().filterRegenO2Txt.text = "Consumption rate: "+ consumpRate +" /s." + "     Purifying rate: "+ regenRate +" /s.";
+	}
+
+	public void StartToMove()
+	{
+		audioS.clip = engineSnd;
+		audioS.mute = false;
+		audioS.Play ();
+
+
+		isMoving = true;
+	}
+
+	public void StopMoving()
+	{
+		audioS.mute = true;
+		isMoving = false;
+
 	}
 }

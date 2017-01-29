@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MotorInterface : MonoBehaviour {
     // coup d'énergie pour redémarrer si jamais elle est éteinte : quand plus d'énergie
@@ -43,8 +44,9 @@ public class MotorInterface : MonoBehaviour {
 
 	public void Start()
 	{
-		coolingMsg.text = "Cooling systems level " + coolerLvl + " are operational.";
+		coolingMsg.text = "Cooling systems level " + coolerLvl + " are operationals.";
 		playerShipStats = GameObject.Find ("PlayerObj").GetComponent<PlayerShipStats> ();
+
 
 	}
 
@@ -75,13 +77,54 @@ public class MotorInterface : MonoBehaviour {
 		}
 	}
 
+	public void MakeTheJump()
+	{
+		if (playerShipStats.shipFuel == playerShipStats.shipMaxFuel) 
+		{
+
+			if (tempRoom.value < 1000) {
+				StartCoroutine(JumpProcedure());
+
+			}
+		}
+
+	}
+	IEnumerator JumpProcedure()
+	{
+
+		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go.GetComponentInChildren<Image> ().color = Color.green ;
+		go.GetComponentInChildren<Text> ().text = "Getting ready to jump!";
+		yield return new WaitForSeconds (2f);
+		GameObject go2 = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go2.GetComponentInChildren<Image> ().color = Color.green ;
+		go2.GetComponentInChildren<Text> ().text = "Ionic propulsion stopped.Jumping in a few seconds.";
+		ionicCons.value = 0f;
+		ionicCons.interactable = false;
+		playerShipStats.shipFuel = 0;
+		yield return new WaitForSeconds (3f);
+		tempRoom.value += 1000;
+		if (isCrewed) 
+		{
+			if (crewCharScript.techComp) 
+			{
+				ionicCons.interactable = true;
+			}
+		}
+		SceneManager.LoadScene (1);
+
+	}
+
 	public void BreakTheModule()
 	{
+		coolingMsg.text = "The engines need to be fixed to move !";
+
 		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.red;
 		go.GetComponentInChildren<Text> ().text = "Something is going really wrong in the engines room. Better fix it.";
 		_coolerLvl = coolerLvl;
 		coolerLvl = 0;
+		coolingBtn.gameObject.SetActive (true);
 		coolingBtn.interactable = true;
 		coolingBtn.gameObject.GetComponent<Image> ().color = Color.red;
 		if ((crewCharScript.techComp == true)) 
@@ -94,18 +137,25 @@ public class MotorInterface : MonoBehaviour {
 
 	public void FixTheModule()
 	{
-		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
-		go.GetComponentInChildren<Image> ().color = Color.red;
-		go.GetComponentInChildren<Text> ().text = "The Engines have been fixed. Great job.";
-		coolerLvl = _coolerLvl;
-		coolingBtn.interactable = false;
-		coolingBtn.gameObject.GetComponent<Image> ().color = Color.white;
-		if ((crewCharScript.techComp == true)) 
-		{			
-			ionicCons.interactable = true;
-			engineSwitch.interactable = true;
+		if (isCrewed) {
+			coolingMsg.text = "Cooling systems level " + coolerLvl + " are operationals.";
 
+			GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+			go.GetComponentInChildren<Image> ().color = Color.red;
+			go.GetComponentInChildren<Text> ().text = "The Engines have been fixed. Great job.";
+			coolerLvl = _coolerLvl;
+			coolingBtn.gameObject.SetActive (false);
+
+			coolingBtn.interactable = false;
+			coolingBtn.gameObject.GetComponent<Image> ().color = Color.white;
+			if ((crewCharScript.techComp == true)) {			
+				ionicCons.interactable = true;
+				engineSwitch.interactable = true;
+				return;
+			}
 		}
+		GetComponent<PlayerInterfaceManager> ().PlayClicDeniedSound ();
+
 	}
 
 	public void ToggleMenu(){
@@ -154,7 +204,8 @@ public class MotorInterface : MonoBehaviour {
 	public void SetMotorConsRate()
 	{
 
-		GameObject.Find ("PlayerObj").GetComponent<PlayerShipStats> ().motorPowerCons = Mathf.RoundToInt ( ionicCons.value);
+		playerShipStats.motorPowerCons = Mathf.RoundToInt ( ionicCons.value);
+		playerShipStats.audioS.volume =0.2f+0.01f * ionicCons.value;
 		GameObject.Find ("PlayerObj").GetComponent<ClicToMove> ().speed = ionicCons.value/2;
 		ionicSpeed.text = "Ionic speed: " + ionicCons.value / 2 + " m/s.";
 		ElecConsTxt.text = ionicCons.value.ToString() + "/s.";
@@ -166,6 +217,8 @@ public class MotorInterface : MonoBehaviour {
 		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.red;
 		go.GetComponentInChildren<Text> ().text = "The engines are shutdown.";
+		playerShipStats.audioS.mute = true;
+
 		isShutdown = true;
 		ionicCons.value = 0;
 		engineSwitch.interactable = false;
@@ -193,6 +246,10 @@ public class MotorInterface : MonoBehaviour {
 	IEnumerator EngineSwitchOn()
 	{
 		advertiseTxt.text = "Starting the engines !";
+		playerShipStats.audioS.clip = playerShipStats.engineRestartSnd;
+		playerShipStats.audioS.volume = 1f;
+		playerShipStats.audioS.mute = false;
+		playerShipStats.audioS.Play ();
 			
 		playerShipStats.shipPower -= ModuleBootCost / 5;
 		yield return new WaitForSeconds (1f);
@@ -203,6 +260,7 @@ public class MotorInterface : MonoBehaviour {
 		yield return new WaitForSeconds (1f);
 		playerShipStats.shipPower -= ModuleBootCost / 5;
 		yield return new WaitForSeconds (1f);
+
 		advertiseTxt.text = "Engines are ready";
 		playerShipStats.shipPower -= ModuleBootCost / 5;
 		ionicCons.value = 5;
@@ -215,6 +273,8 @@ public class MotorInterface : MonoBehaviour {
 			}
 		}
 		yield return new WaitForSeconds (1f);
+		playerShipStats.audioS.mute = true;
+
 		advertiseTxt.text = "";
 		GameObject go = Instantiate (motorMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.green;
