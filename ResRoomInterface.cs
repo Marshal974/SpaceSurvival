@@ -79,7 +79,6 @@ public class ResRoomInterface : MonoBehaviour {
     //make the module Crewed
     public void GetAGuy(string name)
     {
-
         isCrewed = true;
         CrewPanel.SetActive(true);
         assignCrew.gameObject.SetActive(false);
