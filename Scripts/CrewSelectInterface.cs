@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class CrewSelectInterface : MonoBehaviour {
 
 	public bool actifTab;
 	public GameObject ChildMenu;
-	public CrewCharacter[] crewChar;
+
+	public List<CrewCharacter> crewCharList =new List<CrewCharacter>() ;
+	public CrewCharacter[] crewChar ;
 	public GameObject CrewPanel;
 	public GameObject CrewCharPrefab;
 	private int IDofCrew = 1;
@@ -16,8 +19,9 @@ public class CrewSelectInterface : MonoBehaviour {
 	void Awake()
 	{
 		crewChar = gameObject.GetComponentsInChildren<CrewCharacter> ();
+		crewCharList = new List<CrewCharacter> (crewChar);
 
-		foreach(CrewCharacter crew in crewChar)
+		foreach(CrewCharacter crew in crewCharList)
 		{
 //			if (crew.isAssigned == false) {
 				crew.ID = IDofCrew;
@@ -28,6 +32,15 @@ public class CrewSelectInterface : MonoBehaviour {
 //			}
 		}
 	}
+	public void AddAPlayerSelectButton(CrewCharacter crew)
+	{
+		crewCharList.Add (crew);
+		crew.ID = IDofCrew;
+		IDofCrew += 1;
+		GameObject Go = Instantiate (CrewCharPrefab, CrewPanel.transform, false);
+		Go.name = "crewmember " + crew.ID ;
+		crew.menuResume = Go.gameObject;
+	}
 
 	public void ToggleMenu(){
 
@@ -35,9 +48,8 @@ public class CrewSelectInterface : MonoBehaviour {
 			
 			ChildMenu.SetActive (true);
 			GetComponent<PlayerInterfaceManager> ().crewSelectPanel = true;
-			crewChar = gameObject.GetComponentsInChildren<CrewCharacter> ();
 
-			foreach (CrewCharacter crew in crewChar) {
+			foreach (CrewCharacter crew in crewCharList) {
 				crew.ActualizedTheInfoHandler ();
 			}
 
