@@ -24,6 +24,7 @@ public class CrewCharacter : MonoBehaviour {
 	private GameObject playerInterface;
 
 
+
 	enum Status
 		{
 			hurt,
@@ -35,18 +36,21 @@ public class CrewCharacter : MonoBehaviour {
 		
 	void Start()
 	{
-		playerInterface = GameObject.Find ("PlayerInterface");		
+
+
+		playerInterface = GameObject.Find ("PlayerInterface");
 		gameObject.transform.parent = playerInterface.transform;
 		ActualizedTheInfoHandler ();
 	}
 
 	public void ActualizedTheInfoHandler()
 	{
+		
 		CrewMemberInfoHandler crewInfo;
 		crewInfo =  menuResume.GetComponent<CrewMemberInfoHandler> ();
 		crewInfo.name.text = nom;
-		crewInfo.selectButton.onClick.AddListener(SayImInRoomX);
 		crewInfo.compDescription.text = "";
+		crewInfo.selectButton.onClick.RemoveAllListeners ();
 
 		if (!techComp && !navComp && !medComp) 
 		{
@@ -67,6 +71,9 @@ public class CrewCharacter : MonoBehaviour {
 
         }
         if (isAssigned == false) {
+			crewInfo.selectButton.onClick.AddListener(SayImInRoomX);
+			crewInfo.selectButton.onClick.AddListener (playerInterface.GetComponent<PlayerInterfaceManager>().PlayClicAcceptedSound);
+
 			crewInfo.selectButton.GetComponent<Image> ().color = colorGood;
 			crewInfo.description.text = "Is available";
 			crewInfo.selectButton.interactable = true;
@@ -74,9 +81,9 @@ public class CrewCharacter : MonoBehaviour {
 				
 		}
 		if (isAssigned == true) {
+			crewInfo.selectButton.onClick.AddListener (playerInterface.GetComponent<PlayerInterfaceManager>().PlayClicDeniedSound);
 			crewInfo.selectButton.GetComponent<Image> ().color = colorBad;
 			crewInfo.description.text = "Is not available";
-			crewInfo.selectButton.interactable = false;
 
 		}
 

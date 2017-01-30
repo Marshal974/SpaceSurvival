@@ -20,9 +20,14 @@ public class PlayerTargeter : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Player") 
 		{
-			GetComponent<LineRenderer> ().enabled = false;
+			RemoveTheline ();
 			other.GetComponent<PlayerShipStats> ().StopMoving ();
 
 		}
+	}
+	public void RemoveTheline()
+	{
+		GetComponent<LineRenderer> ().enabled = false;
+
 	}
 }

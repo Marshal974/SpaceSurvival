@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class CrewSelectInterface : MonoBehaviour {
 
 	public bool actifTab;
@@ -14,6 +13,7 @@ public class CrewSelectInterface : MonoBehaviour {
 	public GameObject CrewPanel;
 	public GameObject CrewCharPrefab;
 	private int IDofCrew = 1;
+
 
 
 	void Awake()
@@ -32,6 +32,8 @@ public class CrewSelectInterface : MonoBehaviour {
 //			}
 		}
 	}
+
+
 	public void AddAPlayerSelectButton(CrewCharacter crew)
 	{
 		crewCharList.Add (crew);
@@ -43,6 +45,8 @@ public class CrewSelectInterface : MonoBehaviour {
 	}
 
 	public void ToggleMenu(){
+		GetComponent<PlayerInterfaceManager>().PlayClicAcceptedSound();
+
 
 		if (actifTab == false){
 			

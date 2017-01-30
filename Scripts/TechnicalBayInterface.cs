@@ -192,7 +192,7 @@ public class TechnicalBayInterface : MonoBehaviour {
 		crewLeave.interactable = false;
 		GameObject go2 = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go2.GetComponentInChildren<Image> ().color = Color.yellow;
-		go2.GetComponentInChildren<Text> ().text = 	crewCharScript.nom + "is fixing the leak...";
+		go2.GetComponentInChildren<Text> ().text = 	crewCharScript.nom + " is fixing the leak...";
 		yield return new WaitForSeconds (10f);
 		GameObject go = Instantiate (techBayMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 		go.GetComponentInChildren<Image> ().color = Color.green;

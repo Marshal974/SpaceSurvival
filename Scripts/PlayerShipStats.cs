@@ -53,6 +53,7 @@ public class PlayerShipStats : MonoBehaviour {
 	public float shipFuelRegen = 1;
 	public Text fuelText;
 	public Slider fuelInMotorRoom;
+	public bool readyToJumpAlert; // get set to false by the JumpProcedure of the MotorInterfaceScript
 
 	//sons
 	public AudioSource audioS;
@@ -102,7 +103,7 @@ public class PlayerShipStats : MonoBehaviour {
 		{
 			shipOxy = shipMaxOxy;
 		}
-		if (shipOxy >= 0) {
+		if (shipOxy <= 0) {
 			shipOxy = 0;
 			if (O2AlertDone == false) {
 				O2AlertDone = true;
@@ -123,6 +124,22 @@ public class PlayerShipStats : MonoBehaviour {
 		if (shipFuel > shipMaxFuel) 
 		{
 			shipFuel = shipMaxFuel;
+			if (readyToJumpAlert == false) 
+			{
+				readyToJumpAlert = true;
+				GameObject go = Instantiate (shipStatMessPrefab, playerInterfaceUI.GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+				go.GetComponentInChildren<Image> ().color = Color.green;
+				go.GetComponentInChildren<Text> ().text = "We have enough antimatter to make the jump.";
+				if (playerInterfaceUI.GetComponent<MotorInterface> ().tempRoom.value > 1000) 
+				{
+					GameObject go2 = Instantiate (shipStatMessPrefab, playerInterfaceUI.GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+					go2.GetComponentInChildren<Image> ().color = Color.yellow;
+					go2.GetComponentInChildren<Text> ().text = "Unfortunatly...the engines are too hot for jumping !";
+					return;
+				}
+
+				playerInterfaceUI.GetComponent<MotorInterface> ().engineSwitch.gameObject.GetComponent<Image> ().color = Color.green;
+			}
 		}
 
 
