@@ -110,6 +110,7 @@ public class MotorInterface : MonoBehaviour {
 		playerShipStats.readyToJumpAlert = false;
 
 		yield return new WaitForSeconds (3f);
+		GetComponent<RadarInterface> ().targetScanLock = false;
 		engineSwitch.gameObject.GetComponent<Image> ().color = Color.red;
 		tempRoom.value += 1000;
 		isJumping = false;

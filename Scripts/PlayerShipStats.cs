@@ -20,6 +20,7 @@ public class PlayerShipStats : MonoBehaviour {
 
     // résistances aux radiations
 	public int shipResisToRad = 5;
+	public int shipRadLevel = 0;
 	public int shipTotalCrew;
 	public Text crewText;
 
@@ -110,6 +111,7 @@ public class PlayerShipStats : MonoBehaviour {
 			shipPower += shipPowerRegen;
 			shipPower -= shipPowerLoses;
 			shipFuel += shipFuelRegen;
+			shipIntegrity -= shipRadLevel;
 			fuelInMotorRoom.value = shipFuel;
 			if (playerInterfaceUI.GetComponent<MotorInterface> ().tempRoom.value > 0) {
 				playerInterfaceUI.GetComponent<MotorInterface> ().TempCool ();

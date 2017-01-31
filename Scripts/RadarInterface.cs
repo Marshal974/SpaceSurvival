@@ -5,6 +5,9 @@
 
 	public class RadarInterface : MonoBehaviour {
 
+		public GameObject satelliteBtnPrefab;
+		public Transform InterestPointPanel;
+		public bool targetScanLock;
 		public bool radarActive;
 		public Camera radarCam;
 		public Transform radarArea;
@@ -19,9 +22,9 @@
 		public Button assignCrew;
 		public Button crewLeave;
 		public GameObject CrewPanel;
-	public Text radarRangeTxt;
+		public Text radarRangeTxt;
 
-	public float timeBetweenTics = 2;
+		public float timeBetweenTics = 2;
 		public bool isCrewed;
 		
 		private float nextTic;
@@ -126,6 +129,7 @@
 		{
 			isCrewed = false;
 			DesactivateTheRadar ();
+		InterestPointPanel.gameObject.SetActive (false);
 
 			MakeGuyAvailableOnTimer ();
 		}
@@ -175,10 +179,110 @@
 				radarRangeTxt.text = "Actualisation rate : "+ timeBetweenTics + "/s.";
 			}
 			alreadyRunning = false;
+			InterestPointPanel.gameObject.SetActive (true);
+
 			GameObject go = Instantiate (RadarMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 			go.GetComponentInChildren<Image> ().color = Color.white;
 			go.GetComponentInChildren<Text> ().text = crewCharScript.nom + " is in the radar room.";
 		}
+	public void AddASatellite()
+	{
+		Instantiate (satelliteBtnPrefab, InterestPointPanel, false);
+	}
+	public void Scanning()
+	{
+		StartCoroutine (ScanProcedure());
+	}
+
+	IEnumerator ScanProcedure()
+	{
+		targetScanLock = true;
+		float timeToFinish = 300f;
+		crewLeave.interactable = false;
+		if (crewCharScript.navComp) {
+			timeToFinish = 300f / crewCharScript.lvlNavComp;
+		}
+		crewDescriptif.text = " Hacking nearby satellite need " + Mathf.Round( timeToFinish) + " seconds";
+		yield return new WaitForSeconds ( Mathf.Round( timeToFinish/4f));
+		if (targetScanLock == false) 
+		{
+			crewLeave.interactable = true;
+
+			GameObject go = Instantiate (RadarMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+			go.GetComponentInChildren<Image> ().color = Color.yellow;
+			go.GetComponentInChildren<Text> ().text = crewCharScript.nom + " has lost contact with the satellite !";
+			crewDescriptif.text = "No special skills.";
+			if (crewCharScript.navComp) 
+			{
+				crewDescriptif.text = "Navigator level " + crewCharScript.lvlNavComp;
+			}
+			yield break;
+		}
+		crewDescriptif.text = "Taking control of the satellite" ;
+
+		yield return new WaitForSeconds (timeToFinish/4f);
+		if (targetScanLock == false) 
+		{
+			crewLeave.interactable = true;
+
+			GameObject go0 = Instantiate (RadarMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+			go0.GetComponentInChildren<Image> ().color = Color.yellow;
+			go0.GetComponentInChildren<Text> ().text = crewCharScript.nom + " has lost contact with the satellite !";
+			crewDescriptif.text = "No special skills.";
+			if (crewCharScript.navComp) 
+			{
+				crewDescriptif.text = "Navigator level " + crewCharScript.lvlNavComp;
+			}
+			yield break;
+		}
+		crewDescriptif.text = "Is controlling the satellite";
+
+		yield return new WaitForSeconds (timeToFinish/4f);
+		if (targetScanLock == false) 
+		{
+			crewLeave.interactable = true;
+
+			GameObject go = Instantiate (RadarMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+			go.GetComponentInChildren<Image> ().color = Color.yellow;
+			go.GetComponentInChildren<Text> ().text = crewCharScript.nom + " has lost contact with the satellite !";
+			crewDescriptif.text = "No special skills.";
+			if (crewCharScript.navComp) 
+			{
+				crewDescriptif.text = "Navigator level " + crewCharScript.lvlNavComp;
+			}
+			yield break;
+		}
+		crewDescriptif.text = "Almost recovered...";
+
+		yield return new WaitForSeconds (timeToFinish/4f);
+
+		crewDescriptif.text = "No special skills.";
+		if (crewCharScript.navComp) 
+		{
+			crewDescriptif.text = "Navigator level " + crewCharScript.lvlNavComp;
+		}
+		if (targetScanLock == false) 
+		{
+			crewLeave.interactable = true;
+
+			GameObject go2 = Instantiate (RadarMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+			go2.GetComponentInChildren<Image> ().color = Color.yellow;
+			go2.GetComponentInChildren<Text> ().text = crewCharScript.nom + " has lost contact with the satellite !";
+			crewDescriptif.text = "No special skills.";
+			if (crewCharScript.navComp) 
+			{
+				crewDescriptif.text = "Navigator level " + crewCharScript.lvlNavComp;
+			}
+			yield break;
+		}
+		crewLeave.interactable = true;
+		GameObject go3 = Instantiate (RadarMessPrefab, GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+		go3.GetComponentInChildren<Image> ().color = Color.green;
+		go3.GetComponentInChildren<Text> ().text = crewCharScript.nom + " has recover a satellite. +200 rocketparts.";
+		GameObject.Find ("PlayerObj").GetComponent<PlayerShipStats>().rocketParts += 200;
+		targetScanLock = false;
+
+	}
 
 	}
 
