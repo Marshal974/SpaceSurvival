@@ -42,7 +42,11 @@ public class PlayerShipStats : MonoBehaviour {
 	public int shipOxy;
 	public int shipO2Loses;
 	public Text oxyText;
-	private bool O2AlertDone;
+	private bool O2AlertDone; //is the alert for "O2 at zero" sent ? 
+	private bool o2AboveTenth; // is the alert for "o2 above 10% " sent ? 
+	public float timeBeforeSuffocate; // how long can the air stay breathable without new o2 ? 
+	private float officialTimeToSuff;
+	private bool isSuffocating;
 
 	public int shipOxyRenewRate = 1;
 	public int shipfilterOxyLvl = 1;
@@ -76,6 +80,28 @@ public class PlayerShipStats : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		if (shipOxy == 0 && Time.time > officialTimeToSuff && isSuffocating) 
+		{
+			Debug.Log ("kill the crew"); 
+			isSuffocating = false;
+			// add here events for what happen when dying because of air scarecity
+		}
+
+		if (O2AlertDone) 
+		{
+			if (shipOxy > (shipMaxOxy / 100) && o2AboveTenth == false) 
+			{
+				isSuffocating = false;
+				o2AboveTenth = true;
+				GameObject go = Instantiate (shipStatMessPrefab, playerInterfaceUI.GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
+				go.GetComponentInChildren<Image> ().color = Color.yellow;
+				go.GetComponentInChildren<Text> ().text = "Oxygen reserves critical but people are breathing again.";
+				O2AlertDone = false;
+				oxyText.color = Color.white;
+			}
+				
+
+		}
 		if (Time.time > ticTimer) {
 			
 			ticTimer = Time.time + consRate;
@@ -106,7 +132,11 @@ public class PlayerShipStats : MonoBehaviour {
 		if (shipOxy <= 0) {
 			shipOxy = 0;
 			if (O2AlertDone == false) {
+				o2AboveTenth = false;
+				oxyText.color = Color.red;
 				O2AlertDone = true;
+				officialTimeToSuff = Time.time + timeBeforeSuffocate;
+				isSuffocating = true;
 				GameObject go = Instantiate (shipStatMessPrefab, playerInterfaceUI.GetComponent<PlayerInterfaceManager> ().alertMessPanel, false);
 				go.GetComponentInChildren<Image> ().color = Color.red;
 				go.GetComponentInChildren<Text> ().text = "We are out of fresh air. people are gonna die here !!!";

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DetectedByRadarScript : MonoBehaviour {
 
+	public GameObject messPrefab;
+	public GameObject interestPointPrefab;
 	// Use this for initialization
 	void Start () {
 		
@@ -13,4 +15,11 @@ public class DetectedByRadarScript : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	// ajouter ca dans la fenetre radar. en mode interactif.
+	public void GetDetected()
+	{
+		GameObject go = Instantiate (interestPointPrefab);
+	}
+
 }

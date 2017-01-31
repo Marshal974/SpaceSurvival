@@ -28,6 +28,7 @@ public class MotorInterface : MonoBehaviour {
 
 	private bool overheating; // en surchauffe ?
 	private bool isShutdown; // module éteint ou allumer
+	private bool isJumping;
 	public Text advertiseTxt;
 
 
@@ -82,13 +83,15 @@ public class MotorInterface : MonoBehaviour {
 		if (playerShipStats.shipFuel == playerShipStats.shipMaxFuel) 
 		{
 
-			if (tempRoom.value < 1000) {
+			if (tempRoom.value < 1000 && isJumping == false) {
 				GameObject.Find ("PlayerTargeter").GetComponent<PlayerTargeter> ().RemoveTheline ();
 				StartCoroutine(JumpProcedure());
+				isJumping = true;
 				return;
 			}
-			GetComponent<PlayerInterfaceManager> ().PlayClicDeniedSound ();
-		}
+		}			
+		GetComponent<PlayerInterfaceManager> ().PlayClicDeniedSound ();
+
 
 	}
 	IEnumerator JumpProcedure()
@@ -109,6 +112,7 @@ public class MotorInterface : MonoBehaviour {
 		yield return new WaitForSeconds (3f);
 		engineSwitch.gameObject.GetComponent<Image> ().color = Color.red;
 		tempRoom.value += 1000;
+		isJumping = false;
 		if (isCrewed) 
 		{
 			if (crewCharScript.techComp) 
@@ -390,19 +394,23 @@ public class MotorInterface : MonoBehaviour {
 	}
 	public void TempRize ()
 	{
-		if (isCrewed) {
-			tempRoom.value += Mathf.Round (ionicCons.value / crewCharScript.lvlTechComp) + 1;
-			return;
+		if (isCrewed && crewCharScript.techComp) 
+		{
+				tempRoom.value += Mathf.Round (ionicCons.value / crewCharScript.lvlTechComp) + 1;
+				return;
+
+
 		} else {
 			tempRoom.value += ionicCons.value;
 		}
 	}
 	public void TempCool()
 	{
-		tempRoom.value -= coolerLvl;
+		tempRoom.value -= coolerLvl * 5;
 		if (isCrewed) 
 		{
-			if (crewCharScript.techComp) {
+			if (crewCharScript.techComp) 
+			{
 				tempRoom.value -= coolerLvl * crewCharScript.lvlTechComp;
 			}
 		}
